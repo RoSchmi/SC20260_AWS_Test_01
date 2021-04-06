@@ -5,7 +5,7 @@
 // https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html
 
 // If commented out, ENC28 Ethernet Module is used
-#define UseWifiModule
+//#define UseWifiModule
 
 using System;
 using System.Text;
@@ -147,6 +147,7 @@ namespace SC20260_AWS_Test_01
             #endregion
 
             #region Region Example, how a command can be created (not used in this App
+            
             CommandClass command = new CommandClass()
             {
                 state = new State() { desired = (State.Predicate)new State.Predicate() { Leftcolor = "blue", Rightcolor = "red" } } ,
@@ -157,8 +158,9 @@ namespace SC20260_AWS_Test_01
             var result = JsonConverter.Serialize(command);           
             var stringValue = result.ToString();
             var cmd = (CommandClass)JsonConverter.DeserializeObject(stringValue, typeof(CommandClass), CreateInstance);
+            
+            
             #endregion
-
 
 #if UseWifiModule
             SetupWiFi7Click_SC20260D_MicroBus2();
@@ -169,6 +171,19 @@ namespace SC20260_AWS_Test_01
             Thread.Sleep(-1);
         }
         #endregion
+
+        #region Method CreateInstance (needed for JSON Deserialization
+        private static object CreateInstance(string path, JToken token, Type baseType, string name, int length)
+        {
+            if (name == "intArray")
+                return new int[length];
+            else if (name == "stringArray")
+                return new string[length];
+            else
+                return null;
+        }
+        #endregion
+
 
         #region DoTestAwsMqtt()
         static void DoTestAwsMqtt()
@@ -245,9 +260,18 @@ namespace SC20260_AWS_Test_01
         private static void IotClient_PublishReceivedChanged(object sender, MqttPacket packet)
         {    
             string Message = Encoding.UTF8.GetString(packet.Data);
-            
+
+            // RoSchmi
+
+            //int[] intArray = new int[]{1, 2 }; 
+
+            //var theJToken = new JArray(intArray);
+
+            //var command = (CommandClass)JsonConverter.DeserializeObject(Message, typeof(CommandClass), CreateInstance);
+            //var command = (CommandClass)JsonConverter.DeserializeObject(Message, typeof(CommandClass), new InstanceFactory(CreateInst(Message, theJToken, typeof(CommandClass), "Hello", 6)));
             var command = (CommandClass)JsonConverter.DeserializeObject(Message, typeof(CommandClass), CreateInstance);
 
+            var theString = new String(new char[2] { 'h', 'e' });
 
             if (command.state.desired != null)
             {
@@ -392,8 +416,8 @@ namespace SC20260_AWS_Test_01
 
 
             networkInterfaceSetting.MacAddress = new byte[] { 0x00, 0x4, 0x00, 0x00, 0x00, 0x00 };
-            networkInterfaceSetting.IsDhcpEnabled = true;
-            networkInterfaceSetting.IsDynamicDnsEnabled = true;
+            networkInterfaceSetting.DhcpEnable = true;
+            networkInterfaceSetting.DhcpEnable = true;
 
 
             networkInterfaceSetting.TlsEntropy = new byte[] { 0, 1, 2, 3 };
@@ -475,8 +499,8 @@ namespace SC20260_AWS_Test_01
             //networkInterfaceSetting.MacAddress = new byte[] { 0x00, 0x4, 0x00, 0x00, 0x00, 0x00 };
             networkInterfaceSetting.MacAddress = new byte[] { 0x4A, 0x28, 0x05, 0x2A, 0xA4, 0x0F };
 
-            networkInterfaceSetting.IsDhcpEnabled = true;
-            networkInterfaceSetting.IsDynamicDnsEnabled = true;
+            networkInterfaceSetting.DhcpEnable = true;
+            networkInterfaceSetting.DhcpEnable = true;
 
             networkInterfaceSetting.TlsEntropy = new byte[] { 1, 2, 3, 4 };
 
@@ -490,6 +514,7 @@ namespace SC20260_AWS_Test_01
             networkController.NetworkLinkConnectedChanged +=
                 NetworkController_NetworkLinkConnectedChanged;
 
+            
 
             networkController.Enable();
 
