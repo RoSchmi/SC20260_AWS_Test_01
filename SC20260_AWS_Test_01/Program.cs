@@ -5,7 +5,7 @@
 // https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html
 
 // If commented out, ENC28 Ethernet Module is used
-//#define UseWifiModule
+#define UseWifiModule
 
 using System;
 using System.Text;
