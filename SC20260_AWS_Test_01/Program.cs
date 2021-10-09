@@ -37,7 +37,7 @@ namespace SC20260_AWS_Test_01
         static System.Drawing.Graphics screen;
 
 
-        // Set your WiFi Credentials here or store them in the Resources
+        // Set your WiFi Credentials here or store them in the  Resources
         static string wiFiSSID_1 = ResourcesSecret.GetString(ResourcesSecret.StringResources.WifiSSID_1);
         //static string wiFiSSID_1 = "VirtualWiFi";
 
